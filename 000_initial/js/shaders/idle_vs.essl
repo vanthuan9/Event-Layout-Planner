@@ -1,0 +1,22 @@
+Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 300 es
+  in vec4 vertexPosition;
+  in vec4 vertexColor; //this name must match name in Program.js
+  out vec4 colors; //pass color to FS
+
+  //uniform vec3 trianglePosition;
+  //uniform mat4 modelMatrix;
+  uniform mat4 modelViewProjMatrix;
+  uniform vec4 solidColor;
+  //uniform float triangleScale;
+
+  void main(void) {
+    //gl_Position = vertexPosition;
+    //gl_Position.xyz = trianglePosition * triangleScale;
+
+    gl_Position = vertexPosition*modelViewProjMatrix;
+
+    //gl_Position.xyz += trianglePosition;
+    //gl_Position.xyz *= triangleScale;
+    colors = solidColor;
+  }
+`;

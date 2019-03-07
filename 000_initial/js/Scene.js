@@ -7,6 +7,7 @@ const Scene = function(gl) {
   this.camera = new OrthoCamera()
 
   this.triangleGeometry = new TriangleGeometry(gl);
+  this.circleGeometry = new CircleGeometry(gl, 90);
 
   this.timeAtLastFrame = new Date().getTime();
 
@@ -29,6 +30,9 @@ const Scene = function(gl) {
 
   this.gameObjList = [new GameObject(this.pinkTriangle), 
                                   new GameObject(this.greenTriangle)];  
+
+  //Test circle
+  this.gameObjList.push(new Mesh(this.circleGeometry, this.greenMaterial))
 };
 
 

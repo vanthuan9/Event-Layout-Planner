@@ -1,5 +1,5 @@
 "use strict";
-const RectangleGeometry = function(gl) {
+const SquareGeometry = function(gl) {
   this.gl = gl;
 
   // allocate and fill vertex buffer in device memory (OpenGL name: array buffer)
@@ -42,7 +42,7 @@ const RectangleGeometry = function(gl) {
   gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
   gl.enableVertexAttribArray(0);
   gl.vertexAttribPointer(0,
-    4, gl.FLOAT, //< three pieces of float
+    3, gl.FLOAT, //< four pieces of float
     false, //< do not normalize (make unit length)
     0, //< tightly packed
     0 //< data starts at array start
@@ -51,7 +51,7 @@ const RectangleGeometry = function(gl) {
   gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
   gl.enableVertexAttribArray(1);
   gl.vertexAttribPointer(1,
-    4, gl.FLOAT, //< three pieces of float
+    3, gl.FLOAT, //< three pieces of float
     false, //< do not normalize (make unit length)
     0, //< tightly packed
     0 //< data starts at array start
@@ -60,11 +60,11 @@ const RectangleGeometry = function(gl) {
   gl.bindVertexArray(null);
 };
 
-RectangleGeometry.prototype.draw = function() {
+SquareGeometry.prototype.draw = function() {
   const gl = this.gl;
 
   gl.bindVertexArray(this.inputLayout);
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);  
 
-  gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0);
+  gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
 };

@@ -1,0 +1,9 @@
+pass vertexPosition from vertexShader to fragmentShader
+
+for pulsating color:
+	in FS, make an if statement to check the location of the fragment 
+		and color it according to your own scheme
+	multiply color by the sine(time)
+
+for stripes:
+	if statement to color the fragment a certain way

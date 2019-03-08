@@ -4,20 +4,20 @@ const Scene = function(gl) {
   this.fsSolid = new Shader(gl, gl.FRAGMENT_SHADER, "solid_fs.essl");
   this.solidProgram = new Program(gl, this.vsIdle, this.fsSolid);
 
-  this.camera = new OrthoCamera()
-
+  //geometries
   this.triangleGeometry = new TriangleGeometry(gl);
   this.circleGeometry = new CircleGeometry(gl, 90);
+  this.squareGeometry = new SquareGeometry(gl);
 
   this.timeAtLastFrame = new Date().getTime();
 
-  this.trianglePosition = {x:-.4, y:0, z:0};
+  this.position1 = {x:-.4, y:0, z:0};
+  this.position2 = {x:.4, y: 0, z: 0};
 
-  this.trianglePosition2 = {x:.4, y: 0, z: 0};
-
+  this.camera = new OrthoCamera();
   this.cameraPosition = {x : 0, y : 0, z : 0};
   
-
+  //make materials
   this.pinkMaterial = new Material(gl, this.solidProgram);
   this.greenMaterial = new Material(gl, this.solidProgram);
   this.pinkMaterial.solidColor.set(1.0,.4,.5);
@@ -25,14 +25,13 @@ const Scene = function(gl) {
   this.greenMaterial.solidColor.set(.5,1.0,.5);
   this.greenMaterial.modelViewProjMatrix.set(new Mat4());
 
-  this.pinkTriangle = new Mesh(this.triangleGeometry, this.pinkMaterial);
-  this.greenTriangle = new Mesh(this.triangleGeometry, this.greenMaterial);
+  //make meshes
+  this.pinkSquare = new Mesh(this.squareGeometry, this.pinkMaterial);
+  this.greenCircle = new Mesh(this.circleGeometry, this.greenMaterial);
 
-  this.gameObjList = [new GameObject(this.pinkTriangle), 
-                                  new GameObject(this.greenTriangle)];  
-
-  //Test circle
-  this.gameObjList.push(new Mesh(this.circleGeometry, this.greenMaterial))
+  this.gameObjList = [];
+  this.gameObjList.push(new GameObject(this.pinkSquare));  
+  this.gameObjList.push(new GameObject(this.greenCircle));
 };
 
 
@@ -44,19 +43,19 @@ Scene.prototype.update = function(gl, keysPressed) {
   this.timeAtLastFrame = timeAtThisFrame;
 
   if(keysPressed.A){
-    this.trianglePosition.x -= .02;
+    this.position1.x -= .02;
   }
 
   if(keysPressed.W){
-    this.trianglePosition.y += .02;
+    this.position1.y += .02;
   } 
 
   if(keysPressed.S){
-    this.trianglePosition.y -= .02;
+    this.position1.y -= .02;
   } 
 
   if(keysPressed.D){
-    this.trianglePosition.x += .02;
+    this.position1.x += .02;
   } 
 
   if(keysPressed.J){
@@ -75,29 +74,14 @@ Scene.prototype.update = function(gl, keysPressed) {
     this.cameraPosition.x += .02;
   } 
 
-
-
   // clear the screen
   gl.clearColor(0.2, .2, 1.0, 1.0);
   gl.clearDepth(1.0);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  this.gameObjList[0].position = this.trianglePosition;
+  this.gameObjList[0].position = this.position1;
 
-  this.gameObjList[1].position = this.trianglePosition2;
-
-  // this.pinkMaterial.modelMatrix.set()
-  // this.pinkMaterial.modelMatrix.rotate(this.rotationAngle);
-  // this.pinkMaterial.modelMatrix.scale(this.scaleVector);
-  // this.pinkMaterial.modelMatrix.translate(this.trianglePosition);
-  // this.pinkMaterial.commit();
-  // this.triangleGeometry.draw();
-  // this.greenMaterial.modelMatrix.set()
-  // this.greenMaterial.modelMatrix.rotate(this.rotationAngle);
-  // this.greenMaterial.modelMatrix.scale(this.scaleVector);
-  // this.greenMaterial.modelMatrix.translate(this.trianglePosition2);
-  // this.greenMaterial.commit();
-  // this.triangleGeometry.draw();
+  //this.gameObjList[1].position = this.position2;
 
   this.camera.position = this.cameraPosition
   this.camera.updateViewProjMatrix()

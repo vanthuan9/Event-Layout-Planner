@@ -1,5 +1,5 @@
 "use strict";
-const SquareGeometry = function(gl) {
+const ChairGeometry = function(gl) {
   this.gl = gl;
 
   // allocate and fill vertex buffer in device memory (OpenGL name: array buffer)
@@ -7,10 +7,14 @@ const SquareGeometry = function(gl) {
   gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
   gl.bufferData(gl.ARRAY_BUFFER,
     new Float32Array([
-      -0.5, 0.5, 0.5,
-      -0.5,  -0.5, 0.5,
-       0.5,  0.5, 0.5,
-       .5, -.5, .5,
+      -0.3, 0.3, 0.3,
+      -0.3,  -0.3, 0.3,
+       0.3,  0.3, 0.3,
+       .3, -.3, .3,
+       -0.3, -.4, 0.3,
+      -0.3,  -0.5, 0.3,
+       0.3,  -.4, 0.3,
+       .3, -.5, .3
     ]),
     gl.STATIC_DRAW);
 
@@ -23,6 +27,10 @@ const SquareGeometry = function(gl) {
       1.0, 1.0, 0, 
       1.0, 1.0, 0, 
       1.0, 1.0, 0, 
+      1.0, 1.0, 0,
+      1.0, 1.0, 0, 
+      1.0, 1.0, 0, 
+      1.0, 1.0, 0,
     ]),
     gl.STATIC_DRAW);
 
@@ -31,7 +39,7 @@ const SquareGeometry = function(gl) {
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,
     new Uint16Array([
-      0, 1, 2, 1, 2, 3
+      0, 1, 2, 1, 2, 3, 4, 5, 6, 5, 6, 7
     ]),
     gl.STATIC_DRAW);
 
@@ -42,7 +50,7 @@ const SquareGeometry = function(gl) {
   gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
   gl.enableVertexAttribArray(0);
   gl.vertexAttribPointer(0,
-    3, gl.FLOAT, //< four pieces of float
+    3, gl.FLOAT, //< three pieces of float
     false, //< do not normalize (make unit length)
     0, //< tightly packed
     0 //< data starts at array start
@@ -60,11 +68,11 @@ const SquareGeometry = function(gl) {
   gl.bindVertexArray(null);
 };
 
-SquareGeometry.prototype.draw = function() {
+ChairGeometry.prototype.draw = function() {
   const gl = this.gl;
 
   gl.bindVertexArray(this.inputLayout);
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);  
 
-  gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+  gl.drawElements(gl.TRIANGLES, 12, gl.UNSIGNED_SHORT, 0);
 };

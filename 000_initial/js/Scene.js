@@ -7,7 +7,7 @@ const Scene = function(gl) {
   //geometries
   this.triangleGeometry = new TriangleGeometry(gl);
   this.circleGeometry = new CircleGeometry(gl, 90);
-  this.squareGeometry = new SquareGeometry(gl);
+  this.chairGeometry = new ChairGeometry(gl);
 
   this.timeAtLastFrame = new Date().getTime();
 
@@ -26,11 +26,9 @@ const Scene = function(gl) {
   this.greenMaterial.modelViewProjMatrix.set(new Mat4());
 
   //make meshes
-  this.pinkSquare = new Mesh(this.squareGeometry, this.pinkMaterial);
   this.greenCircle = new Mesh(this.circleGeometry, this.greenMaterial);
 
   this.gameObjList = [];
-  this.gameObjList.push(new GameObject(this.pinkSquare));  
   this.gameObjList.push(new GameObject(this.greenCircle));
 };
 

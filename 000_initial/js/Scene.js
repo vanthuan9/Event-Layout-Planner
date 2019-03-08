@@ -8,6 +8,7 @@ const Scene = function(gl) {
   this.triangleGeometry = new TriangleGeometry(gl);
   this.circleGeometry = new CircleGeometry(gl, 90);
   this.chairGeometry = new ChairGeometry(gl);
+  this.lampGeometry = new LampGeometry(gl, 90);
 
   this.timeAtLastFrame = new Date().getTime();
 
@@ -26,10 +27,12 @@ const Scene = function(gl) {
   this.greenMaterial.modelViewProjMatrix.set(new Mat4());
 
   //make meshes
-  this.greenCircle = new Mesh(this.circleGeometry, this.greenMaterial);
+  this.greenChair = new Mesh(this.chairGeometry, this.greenMaterial);
+  this.greenLamp = new Mesh(this.lampGeometry, this.greenMaterial);
 
   this.gameObjList = [];
-  this.gameObjList.push(new GameObject(this.greenCircle));
+  this.gameObjList.push(new GameObject(this.greenChair));  
+  this.gameObjList.push(new GameObject(this.greenLamp));
 };
 
 
@@ -40,42 +43,8 @@ Scene.prototype.update = function(gl, keysPressed) {
   const dt = (timeAtThisFrame - this.timeAtLastFrame) / 1000.0;
   this.timeAtLastFrame = timeAtThisFrame;
 
-  if(keysPressed.A){
-    this.position1.x -= .02;
-  }
-
-  if(keysPressed.W){
-    this.position1.y += .02;
-  } 
-
-  if(keysPressed.S){
-    this.position1.y -= .02;
-  } 
-
-  if(keysPressed.D){
-    this.position1.x += .02;
-  } 
-
-  if(keysPressed.J){
-    this.cameraPosition.x -= .02;
-  }
-
-  if(keysPressed.I){
-    this.cameraPosition.y += .02;
-  } 
-
-  if(keysPressed.K){
-    this.cameraPosition.y -= .02;
-  } 
-
-  if(keysPressed.L){
-    this.cameraPosition.x += .02;
-  } 
-
-  // clear the screen
-  gl.clearColor(0.2, .2, 1.0, 1.0);
-  gl.clearDepth(1.0);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  this.updateKeysPressed(keysPressed);
+  this.clearSceneColor(gl);
 
   this.gameObjList[0].position = this.position1;
 
@@ -91,3 +60,49 @@ Scene.prototype.update = function(gl, keysPressed) {
 };
 
 
+Scene.prototype.updateKeysPressed = function(keysPressed) {
+  this.updateObjectMovt(keysPressed);
+  this.updateCameraMovt(keysPressed);
+};
+
+Scene.prototype.updateObjectMovt = function(keysPressed) {
+  if(keysPressed.A){
+    this.position1.x -= .02;
+  }
+
+  if(keysPressed.W){
+    this.position1.y += .02;
+  } 
+
+  if(keysPressed.S){
+    this.position1.y -= .02;
+  } 
+
+  if(keysPressed.D){
+    this.position1.x += .02;
+  } 
+};
+
+Scene.prototype.updateCameraMovt = function(keysPressed){
+  if(keysPressed.J){
+    this.cameraPosition.x -= .02;
+  }
+
+  if(keysPressed.I){
+    this.cameraPosition.y += .02;
+  } 
+
+  if(keysPressed.K){
+    this.cameraPosition.y -= .02;
+  } 
+
+  if(keysPressed.L){
+    this.cameraPosition.x += .02;
+  } 
+};
+
+Scene.prototype.clearSceneColor = function(gl) {
+  gl.clearColor(0.2, .2, 1.0, 1.0);
+  gl.clearDepth(1.0);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+};

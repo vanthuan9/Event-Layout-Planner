@@ -2,9 +2,16 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
   precision highp float;
 
   in vec4 colors;
+  in vec4 modelPosition;
   out vec4 fragmentColor;
 
   void main(void) {
-    fragmentColor = colors;
+
+  	if (fract(modelPosition[0]) + fract(modelPosition[1]) < .5) {
+  		fragmentColor = colors;
+  	} else {
+  		fragmentColor = vec4(1.0, 0, 0, 1.0);
+  	}
+    //fragmentColor = colors;
   }
 `;

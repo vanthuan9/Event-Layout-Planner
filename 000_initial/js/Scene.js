@@ -50,8 +50,8 @@ Scene.prototype.update = function(gl, keysPressed) {
 
   //this.gameObjList[1].position = this.position2;
 
-  this.camera.position = this.cameraPosition
-  this.camera.updateViewProjMatrix()
+  this.camera.position = this.cameraPosition;
+  this.camera.updateViewProjMatrix();
 
   for(var i = 0; i < this.gameObjList.length; i++){
     this.gameObjList[i].draw(this.camera);
@@ -99,6 +99,14 @@ Scene.prototype.updateCameraMovt = function(keysPressed){
   if(keysPressed.L){
     this.cameraPosition.x += .02;
   } 
+
+  if(keysPressed.Z){
+    this.camera.zoom(0.05);
+  }
+
+  if(keysPressed.X){
+    this.camera.zoom((-0.05));
+  }
 };
 
 Scene.prototype.clearSceneColor = function(gl) {

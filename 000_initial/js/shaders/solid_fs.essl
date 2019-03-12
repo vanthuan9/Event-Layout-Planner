@@ -6,11 +6,12 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
   out vec4 fragmentColor;
 
   void main(void) {
-
-  	if (fract(modelPosition[0]) + fract(modelPosition[1]) < .5) {
+  	float xy_sum = 10.0 * (fract(modelPosition[0]) + fract(modelPosition[1]));
+  	float xy_sub = 10.0 * (fract(modelPosition[0]) - fract(modelPosition[1]));
+  	if ((int(xy_sum) % 2 == 0) && (int(xy_sub) % 2 == 0)) {
   		fragmentColor = colors;
   	} else {
-  		fragmentColor = vec4(1.0, 0, 0, 1.0);
+  		fragmentColor = vec4(1.0, 0.5, 0, 1.0);
   	}
     //fragmentColor = colors;
   }

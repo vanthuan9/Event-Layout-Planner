@@ -5,6 +5,7 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
   out vec4 color2; //pass stripe secondary color to FS
   out vec2 flags; //[isStriped, isChecked]
   out vec4 modelPosition;
+  out float timePassed;
 
   uniform mat4 modelViewProjMatrix;
   uniform vec4 primary_color;
@@ -18,5 +19,6 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
     color1 = primary_color;
     color2 = secondary_color;
     flags = flagsVector;
+    timePassed = elapsedTime;
   }
 `;

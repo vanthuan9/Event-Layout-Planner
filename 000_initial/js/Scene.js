@@ -71,8 +71,6 @@ Scene.prototype.update = function(gl, keysPressed) {
   this.camera.position = this.cameraPosition;
   this.camera.updateViewProjMatrix();
 
-  console.log(elapsedTime);
-
   for(var i = 0; i < this.gameObjList.length; i++){
     this.gameObjList[i].draw(this.camera, elapsedTime);
   }

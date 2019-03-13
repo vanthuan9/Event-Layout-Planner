@@ -15,11 +15,13 @@ GameObject.prototype.draw = function(camera, elapsedTime) {
 
 	this.elapsedTime = elapsedTime;
 
+	this.mesh.material.elapsedTime.set(this.elapsedTime);
+
 	this.updateModelMatrix();
 
-	var viewMat = this.modelMatrix.mul(camera.viewProjMatrix)
+	var viewMat = this.modelMatrix.mul(camera.viewProjMatrix);
 
-	this.mesh.material.modelViewProjMatrix.set(viewMat)
+	this.mesh.material.modelViewProjMatrix.set(viewMat);
 
 	this.mesh.draw();
 }

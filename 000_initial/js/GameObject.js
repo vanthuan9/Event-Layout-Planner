@@ -6,10 +6,15 @@ const GameObject = function(mesh) {
   this.orientation = 0; 
   this.scale = new Vec3(1, 1, 1); 
 
+  this.elapsedTime = 0;
+
   this.modelMatrix = new Mat4(); 
 };
 
-GameObject.prototype.draw = function(camera) {
+GameObject.prototype.draw = function(camera, elapsedTime) {
+
+	this.elapsedTime = elapsedTime;
+
 	this.updateModelMatrix();
 
 	var viewMat = this.modelMatrix.mul(camera.viewProjMatrix)

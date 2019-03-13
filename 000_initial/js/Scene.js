@@ -17,6 +17,9 @@ const Scene = function(gl) {
 
   this.camera = new OrthoCamera();
   this.cameraPosition = {x : 0, y : 0, z : 0};
+
+  this.timeAtFirstFrame = new Date().getTime();
+
   
   //make materials
   this.pinkMaterial = new Material(gl, this.solidProgram);
@@ -56,6 +59,7 @@ Scene.prototype.update = function(gl, keysPressed) {
   const timeAtThisFrame = new Date().getTime();
   const dt = (timeAtThisFrame - this.timeAtLastFrame) / 1000.0;
   this.timeAtLastFrame = timeAtThisFrame;
+  const elapsedTime = (timeAtThisFrame - this.timeAtFirstFrame) / 100.0;
 
   this.updateKeysPressed(keysPressed);
   this.clearSceneColor(gl);
@@ -68,7 +72,7 @@ Scene.prototype.update = function(gl, keysPressed) {
   this.camera.updateViewProjMatrix();
 
   for(var i = 0; i < this.gameObjList.length; i++){
-    this.gameObjList[i].draw(this.camera);
+    this.gameObjList[i].draw(this.camera, Math.round(elapsedTime));
   }
 
 };

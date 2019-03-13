@@ -32,14 +32,21 @@ const Scene = function(gl) {
   this.stripedMaterial.modelViewProjMatrix.set(new Mat4());
   this.stripedMaterial.flagsVector.set(1.0, 0.0);
 
+  this.checkeredMaterial = new Material(gl, this.solidProgram);
+  this.checkeredMaterial.primary_color.set(1.0, 1.0, 1.0);
+  this.checkeredMaterial.secondary_color.set(.6, .9, .4);
+  this.checkeredMaterial.modelViewProjMatrix.set(new Mat4());
+  this.checkeredMaterial.flagsVector.set(0.0, 1.0);  
+
   //make meshes
   this.greenChair = new Mesh(this.chairGeometry, this.greenMaterial);
   this.greenLamp = new Mesh(this.lampGeometry, this.greenMaterial);
   this.stripedChair = new Mesh(this.chairGeometry, this.stripedMaterial);
+  this.checkeredLamp = new Mesh(this.lampGeometry, this.checkeredMaterial);
 
   this.gameObjList = [];
   this.gameObjList.push(new GameObject(this.stripedChair));  
-  this.gameObjList.push(new GameObject(this.greenLamp));
+  this.gameObjList.push(new GameObject(this.checkeredLamp));
 };
 
 

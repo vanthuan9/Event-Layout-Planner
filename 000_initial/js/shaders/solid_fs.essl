@@ -17,7 +17,15 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
 	  		fragmentColor = color2;
 	  	}
   	} else if(int(flags[1]) == 1) {
-  		//thuan put your code here
+      int x_val = int(fract(modelPosition[0])*10.0);
+      int y_val = int(fract(modelPosition[1])*10.0);
+	    if((x_val%2 == 0 && y_val%2 == 0)
+        || ((x_val + 1)%2 == 0 && (y_val + 1)%2 == 0))
+      {
+       fragmentColor = color1;
+      } else {
+       fragmentColor = color2;
+      }
   	} else {
   		fragmentColor = color1;
   	} 

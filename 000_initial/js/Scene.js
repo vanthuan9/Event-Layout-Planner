@@ -21,17 +21,24 @@ const Scene = function(gl) {
   //make materials
   this.pinkMaterial = new Material(gl, this.solidProgram);
   this.greenMaterial = new Material(gl, this.solidProgram);
-  this.pinkMaterial.solidColor.set(1.0,.4,.5);
+  this.pinkMaterial.primary_color.set(1.0,.4,.5);
   this.pinkMaterial.modelViewProjMatrix.set(new Mat4());
-  this.greenMaterial.solidColor.set(.5,1.0,.5);
+  this.greenMaterial.primary_color.set(.5,1.0,.5);
   this.greenMaterial.modelViewProjMatrix.set(new Mat4());
+
+  this.stripedMaterial = new Material(gl, this.solidProgram);
+  this.stripedMaterial.primary_color.set(1.0, 1.0, 1.0);
+  this.stripedMaterial.secondary_color.set(.6, .9, .4);
+  this.stripedMaterial.modelViewProjMatrix.set(new Mat4());
+  this.stripedMaterial.flagsVector.set(1.0, 0.0);
 
   //make meshes
   this.greenChair = new Mesh(this.chairGeometry, this.greenMaterial);
   this.greenLamp = new Mesh(this.lampGeometry, this.greenMaterial);
+  this.stripedChair = new Mesh(this.chairGeometry, this.stripedMaterial);
 
   this.gameObjList = [];
-  this.gameObjList.push(new GameObject(this.greenChair));  
+  this.gameObjList.push(new GameObject(this.stripedChair));  
   this.gameObjList.push(new GameObject(this.greenLamp));
 };
 

@@ -55,6 +55,9 @@ const Scene = function(gl) {
   this.gameObjList = [];
   this.gameObjList.push(new GameObject(this.heartbeatChair));  
   this.gameObjList.push(new GameObject(this.checkeredLamp));
+
+  this.selectedObjIndex = 0;
+  this.stillPressed = false;
 };
 
 
@@ -69,7 +72,7 @@ Scene.prototype.update = function(gl, keysPressed) {
   this.updateKeysPressed(keysPressed);
   this.clearSceneColor(gl);
 
-  this.gameObjList[0].position = this.position1;
+  this.gameObjList[this.selectedObjIndex].position = this.position1;
 
   //this.gameObjList[1].position = this.position2;
 
@@ -86,6 +89,7 @@ Scene.prototype.update = function(gl, keysPressed) {
 Scene.prototype.updateKeysPressed = function(keysPressed) {
   this.updateObjectMovt(keysPressed);
   this.updateCameraMovt(keysPressed);
+  this.updateSelectKey(keysPressed);
 };
 
 Scene.prototype.updateObjectMovt = function(keysPressed) {
@@ -131,6 +135,24 @@ Scene.prototype.updateCameraMovt = function(keysPressed){
     this.camera.zoom((-0.05));
   }
 };
+
+
+Scene.prototype.updateSelectKey = function(keysPressed) {
+  if (!this.stillPressed) {
+    if (keysPressed.Q) {
+      this.stillPressed = true;
+      this.selectNewObj();
+    }
+  }
+  this.stillPressed = keysPressed.Q;
+};
+
+Scene.prototype.selectNewObj = function() {
+  this.selectedObjIndex ++;
+  this.selectedObjIndex = this.selectedObjIndex % this.gameObjList.length;
+  this.position1 = this.gameObjList[this.selectedObjIndex].position;
+}
+
 
 Scene.prototype.clearSceneColor = function(gl) {
   gl.clearColor(0.2, .2, 1.0, 1.0);

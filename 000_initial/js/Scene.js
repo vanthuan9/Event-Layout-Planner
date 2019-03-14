@@ -12,8 +12,7 @@ const Scene = function(gl) {
 
   this.timeAtLastFrame = new Date().getTime();
 
-  this.position1 = {x:-.4, y:0, z:0};
-  this.position2 = {x:.4, y: 0, z: 0};
+  //this.selectedPos = {x:0, y:0, z:0};
 
   this.camera = new OrthoCamera();
   this.cameraPosition = {x : 0, y : 0, z : 0};
@@ -59,8 +58,10 @@ const Scene = function(gl) {
   this.gameObjList.push(this.heartChairObj);  
   this.gameObjList.push(this.greenLampObj);
 
-  this.selectedObjIndex = 0;
-  this.stillPressed = false;
+  this.selectedObjIndexList = [0, 1];
+  this.tabStillPressed = false;
+  this.mStillPressed = false;
+  this.multiSelectMode = false;
 };
 
 
@@ -75,42 +76,50 @@ Scene.prototype.update = function(gl, keysPressed) {
   this.updateKeysPressed(keysPressed);
   this.clearSceneColor(gl);
 
-  this.gameObjList[this.selectedObjIndex].position = this.position1;
+  if(this.gameObjList.length != 0) {
 
-  //this.gameObjList[1].position = this.position2;
+    this.camera.position = this.cameraPosition;
+    this.camera.updateViewProjMatrix();
 
-  this.camera.position = this.cameraPosition;
-  this.camera.updateViewProjMatrix();
-
-  for(var i = 0; i < this.gameObjList.length; i++){
-    this.gameObjList[i].draw(this.camera, elapsedTime, (i == this.selectedObjIndex));
+    for(var i = 0; i < this.gameObjList.length; i++){
+      this.gameObjList[i].draw(this.camera, elapsedTime, (this.selectedObjIndexList.includes(i)));
+    }
   }
 
 };
 
 
 Scene.prototype.updateKeysPressed = function(keysPressed) {
-  this.updateObjectMovt(keysPressed);
-  this.updateCameraMovt(keysPressed);
-  this.updateSelectKey(keysPressed);
+  if(this.gameObjList.length != 0) {
+    this.updateObjectMovt(keysPressed);
+    this.updateCameraMovt(keysPressed);
+    this.updateTabKey(keysPressed);
+    this.updateShiftKey(keysPressed);
+    this.updateDelKey(keysPressed);
+  }
 };
 
 Scene.prototype.updateObjectMovt = function(keysPressed) {
+  this.selectedPos = new Vec3(0, 0, 0);
   if(keysPressed.A){
-    this.position1.x -= .02;
+    this.selectedPos.x -= .02;
   }
 
   if(keysPressed.W){
-    this.position1.y += .02;
+    this.selectedPos.y += .02;
   } 
 
   if(keysPressed.S){
-    this.position1.y -= .02;
+    this.selectedPos.y -= .02;
   } 
 
   if(keysPressed.D){
-    this.position1.x += .02;
+    this.selectedPos.x += .02;
   } 
+
+  for (var i = 0; i < this.selectedObjIndexList.length; i++){
+      this.gameObjList[this.selectedObjIndexList[i]].position.add(this.selectedPos);
+  }
 };
 
 Scene.prototype.updateCameraMovt = function(keysPressed){
@@ -140,21 +149,53 @@ Scene.prototype.updateCameraMovt = function(keysPressed){
 };
 
 
-Scene.prototype.updateSelectKey = function(keysPressed) {
-  if (!this.stillPressed) {
-    if (keysPressed.Q) {
-      this.stillPressed = true;
-      this.selectNewObj();
+Scene.prototype.updateTabKey = function(keysPressed) {
+  if (!this.tabStillPressed) {
+    if (keysPressed.TAB) {
+      this.tabStillPressed = true;
+      var nextObj = this.selectedObjIndexList[0] + 1;
+      nextObj = nextObj % this.gameObjList.length;
+      this.selectedObjIndexList = [];
+      this.selectNewObj(nextObj);
     }
   }
-  this.stillPressed = keysPressed.Q;
+  this.tabStillPressed = keysPressed.TAB;
 };
 
-Scene.prototype.selectNewObj = function() {
-  this.selectedObjIndex ++;
-  this.selectedObjIndex = this.selectedObjIndex % this.gameObjList.length;
-  this.position1 = this.gameObjList[this.selectedObjIndex].position;
-}
+Scene.prototype.selectNewObj = function(index) {
+   this.selectedObjIndexList.push(index);
+};
+
+Scene.prototype.updateShiftKey = function(keysPressed) {
+   this.multiSelectMode = keysPressed.SHIFT;
+};
+
+
+Scene.prototype.updateDelKey = function(keysPressed) {
+  if (!this.mStillPressed) {
+    if (keysPressed.M) {
+      this.mStillPressed = true;
+      this.delObj();
+    }
+  }
+  this.mStillPressed = keysPressed.M;
+};
+
+Scene.prototype.delObj = function() {
+
+  for(var i = 0; i < this.selectedObjIndexList.length; i++) {
+    var delIndex = this.selectedObjIndexList[0];
+    this.selectedObjIndexList.splice(0,1);
+    this.gameObjList.splice(delIndex, 1);
+    for (var j = 0; j < this.selectedObjIndexList.length; j++) {
+      if(this.selectedObjIndexList[j] >= delIndex) {
+        this.selectedObjIndexList[j]--;
+      }
+    }
+  }
+
+  this.selectedObjIndexList = [0];
+};
 
 
 Scene.prototype.clearSceneColor = function(gl) {

@@ -108,6 +108,7 @@ Scene.prototype.update = function(gl, keysPressed) {
 Scene.prototype.updateKeysPressed = function(keysPressed) {
   if(this.gameObjList.length != 0) {
     this.updateObjectMovt(keysPressed);
+    this.updateObjRotate(keysPressed);
     this.updateCameraMovt(keysPressed);
     this.updateTabKey(keysPressed);
     this.updateShiftKey(keysPressed);
@@ -138,6 +139,26 @@ Scene.prototype.updateObjectMovt = function(keysPressed) {
       this.gameObjList[this.selectedObjIndexList[i]].position.add(this.selectedPos);
   }
 };
+
+Scene.prototype.updateObjRotate = function(keysPressed) {
+  var rotation = 0.0;
+  if(keysPressed.E) {
+    rotation += .05;
+  }
+
+  if(keysPressed.R) {
+    rotation -= .05;
+  }
+
+  this.rotateSelected(rotation);
+
+};
+
+Scene.prototype.rotateSelected = function(angle) {
+  for (var i = 0; i < this.selectedObjIndexList.length; i++){
+    this.gameObjList[this.selectedObjIndexList[i]].orientation += angle;
+  }
+}
 
 Scene.prototype.updateCameraMovt = function(keysPressed){
   if(keysPressed.J){

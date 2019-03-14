@@ -142,11 +142,11 @@ Scene.prototype.updateObjectMovt = function(keysPressed) {
 
 Scene.prototype.updateObjRotate = function(keysPressed) {
   var rotation = 0.0;
-  if(keysPressed.E) {
+  if(keysPressed.A) {
     rotation += .05;
   }
 
-  if(keysPressed.R) {
+  if(keysPressed.D) {
     rotation -= .05;
   }
 

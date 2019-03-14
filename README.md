@@ -1,4 +1,4 @@
-#Event-Layout-Planner
+# Event-Layout-Planner
 
 Features completed by group member:
 

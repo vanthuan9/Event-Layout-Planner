@@ -119,19 +119,19 @@ Scene.prototype.updateKeysPressed = function(keysPressed) {
 
 Scene.prototype.updateObjectMovt = function(keysPressed) {
   this.selectedPos = new Vec3(0, 0, 0);
-  if(keysPressed.A){
+  if(keysPressed.LEFT){
     this.selectedPos.x -= .02;
   }
 
-  if(keysPressed.W){
+  if(keysPressed.UP){
     this.selectedPos.y += .02;
   } 
 
-  if(keysPressed.S){
+  if(keysPressed.DOWN){
     this.selectedPos.y -= .02;
   } 
 
-  if(keysPressed.D){
+  if(keysPressed.RIGHT){
     this.selectedPos.x += .02;
   } 
 

@@ -155,7 +155,9 @@ Scene.prototype.updateTabKey = function(keysPressed) {
       this.tabStillPressed = true;
       var nextObj = this.selectedObjIndexList[0] + 1;
       nextObj = nextObj % this.gameObjList.length;
-      this.selectedObjIndexList = [];
+      if (!this.multiSelectMode){
+        this.selectedObjIndexList = [];
+      }
       this.selectNewObj(nextObj);
     }
   }

@@ -19,42 +19,45 @@ const Scene = function(gl) {
   this.cameraPosition = {x : 0, y : 0, z : 0};
 
   this.timeAtFirstFrame = new Date().getTime();
-
   
   //make materials
   this.pinkMaterial = new Material(gl, this.solidProgram);
-  this.greenMaterial = new Material(gl, this.solidProgram);
   this.pinkMaterial.primary_color.set(1.0,.4,.5);
   this.pinkMaterial.modelViewProjMatrix.set(new Mat4());
-  this.greenMaterial.primary_color.set(.5,1.0,.5);
-  this.greenMaterial.modelViewProjMatrix.set(new Mat4());
+  this.pinkMaterial.flagsVector.set(0.0, 0.0, 0.0);
 
-  this.stripedMaterial = new Material(gl, this.solidProgram);
-  this.stripedMaterial.primary_color.set(1.0, 1.0, 1.0);
-  this.stripedMaterial.secondary_color.set(.6, .9, .4);
-  this.stripedMaterial.modelViewProjMatrix.set(new Mat4());
-  this.stripedMaterial.flagsVector.set(1.0, 0.0, 0.0, 0.0);
+  this.greenMaterial = new Material(gl, this.solidProgram);
+  this.greenMaterial.primary_color.set(.5,1.0,.5);
+  this.greenMaterial.secondary_color.set(.4, .9, .4);
+  this.greenMaterial.modelViewProjMatrix.set(new Mat4());
+  this.greenMaterial.flagsVector.set(0.0, 0.0, 0.0);
 
   this.heartbeatMaterial = new Material(gl, this.solidProgram);
   this.heartbeatMaterial.primary_color.set(1.0, 1.0, 1.0);
   this.heartbeatMaterial.modelViewProjMatrix.set(new Mat4());
-  this.heartbeatMaterial.flagsVector.set(0.0, 0.0, 1.0, 0.0);
+  this.heartbeatMaterial.flagsVector.set(0.0, 1.0, 0.0);
 
   this.checkeredMaterial = new Material(gl, this.solidProgram);
   this.checkeredMaterial.primary_color.set(1.0, 1.0, 1.0);
   this.checkeredMaterial.secondary_color.set(.6, .9, .4);
   this.checkeredMaterial.modelViewProjMatrix.set(new Mat4());
-  this.checkeredMaterial.flagsVector.set(0.0, 1.0, 0.0, 0.0);  
+  this.checkeredMaterial.flagsVector.set(1.0, 0.0, 0.0);
 
   //make meshes
   this.heartbeatChair = new Mesh(this.chairGeometry, this.heartbeatMaterial);
   this.greenLamp = new Mesh(this.lampGeometry, this.greenMaterial);
-  this.stripedChair = new Mesh(this.chairGeometry, this.stripedMaterial);
   this.checkeredLamp = new Mesh(this.lampGeometry, this.checkeredMaterial);
 
+  //make gameObjs
+  this.heartChairObj = new GameObject(this.heartbeatChair);
+  this.heartChairObj.isSelected = false;
+
+  this.greenLampObj = new GameObject(this.greenLamp);
+  this.greenLampObj.isSelected = false;
+
   this.gameObjList = [];
-  this.gameObjList.push(new GameObject(this.heartbeatChair));  
-  this.gameObjList.push(new GameObject(this.checkeredLamp));
+  this.gameObjList.push(this.heartChairObj);  
+  this.gameObjList.push(this.greenLampObj);
 
   this.selectedObjIndex = 0;
   this.stillPressed = false;
@@ -80,7 +83,7 @@ Scene.prototype.update = function(gl, keysPressed) {
   this.camera.updateViewProjMatrix();
 
   for(var i = 0; i < this.gameObjList.length; i++){
-    this.gameObjList[i].draw(this.camera, elapsedTime);
+    this.gameObjList[i].draw(this.camera, elapsedTime, (i == this.selectedObjIndex));
   }
 
 };

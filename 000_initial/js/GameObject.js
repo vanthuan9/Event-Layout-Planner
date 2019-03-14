@@ -6,16 +6,14 @@ const GameObject = function(mesh) {
   this.orientation = 0; 
   this.scale = new Vec3(1, 1, 1); 
 
-  this.elapsedTime = 0;
-
   this.modelMatrix = new Mat4(); 
 };
 
-GameObject.prototype.draw = function(camera, elapsedTime) {
+GameObject.prototype.draw = function(camera, elapsedTime, isSelected) {
 
-	this.elapsedTime = elapsedTime;
+	this.mesh.material.elapsedTime.set(elapsedTime);
 
-	this.mesh.material.elapsedTime.set(this.elapsedTime);
+	this.mesh.material.selectUniform.set(isSelected);
 
 	this.updateModelMatrix();
 

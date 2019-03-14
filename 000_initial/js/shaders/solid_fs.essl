@@ -4,20 +4,21 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
   in vec4 color1;
   in vec4 color2;
   in vec4 modelPosition;
-  in vec4 flags; //[isStriped, isChecked, isHeartBeat, isBlinking]
+  in vec3 flags; //[isChecked, isHeartBeat, isBlinking]
   in float timePassed;	
+  in float selected;
 
   out vec4 fragmentColor;
 
   void main(void) {
-  	if(int(flags[0]) == 1) { //stripes
+  	if(int(selected) == 1) { //stripes
   		float xy_sum = 10.0 * (fract(modelPosition[0]) + fract(modelPosition[1]));
 	  	if (int(xy_sum) % 2 == 0) {
 	  		fragmentColor = color1;
 	  	} else {
 	  		fragmentColor = color2;
 	  	}
-  	} else if(int(flags[1]) == 1) { //checkers
+  	} else if(int(flags[0]) == 1) { //checkers
       int x_val = int(fract(modelPosition[0])*10.0);
       int y_val = int(fract(modelPosition[1])*10.0);
 	    if((x_val%2 == 0 && y_val%2 == 0)
@@ -27,20 +28,23 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
       } else {
        fragmentColor = color2;
       }
-  	} else if(int(flags[2]) == 1){ //heartbeat
-  		//get the fractional part of the timePassed
-  		float remainder = timePassed - float(int(timePassed));
-  		fragmentColor[0] = color1[0] * remainder;
-  		fragmentColor[1] = color1[1] * remainder;
-  		fragmentColor[2] = color1[2] * remainder;
-  		fragmentColor[3] = 1.0;
-
-
-	} else if(int(flags[3]) == 1) { //blinking
-		//thuans blinking stuff
-
   	} else { //solid color, no affects
   		fragmentColor = color1;
   	} 
+
+  	if(int(flags[1]) == 1){ //heartbeat
+  		//get the fractional part of the timePassed
+  		float remainder = timePassed - float(int(timePassed));
+  		fragmentColor[0] = fragmentColor[0] * remainder;
+  		fragmentColor[1] = fragmentColor[1] * remainder;
+  		fragmentColor[2] = fragmentColor[2] * remainder;
+  		fragmentColor[3] = 1.0;
+
+
+	} else if(int(flags[2]) == 1) { //blinking
+		//thuans blinking stuff
+
+  	}
+
   }
 `;

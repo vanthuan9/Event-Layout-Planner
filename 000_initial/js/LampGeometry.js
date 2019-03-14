@@ -12,7 +12,7 @@ const LampGeometry = function(gl, numberVertices) {
 	const b = 0.5;
 	//Create the array of vertices for the circle geometry
 	this.vertexBufferArray = new Float32Array((numberVertices+1)*3);
-	this.vertexBufferArray[0] = 0.0;
+	this.vertexBufferArray[0] = 1.0;
 	this.vertexBufferArray[1] = 0.0;
 	this.vertexBufferArray[2] = 0.0;
 

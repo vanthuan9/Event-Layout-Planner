@@ -10,41 +10,74 @@ Shader.source[document.currentScript.src.split('js/shaders/')[1]] = `#version 30
 
   out vec4 fragmentColor;
 
-  void main(void) {
-  	if(int(selected) == 1) { //stripes
-  		float xy_sum = 10.0 * (fract(modelPosition[0]) + fract(modelPosition[1]));
-	  	if (int(xy_sum) % 2 == 0) {
-	  		fragmentColor = color1;
-	  	} else {
-	  		fragmentColor = color2;
-	  	}
-  	} else if(int(flags[0]) == 1) { //checkers
-      int x_val = int(fract(modelPosition[0])*10.0);
-      int y_val = int(fract(modelPosition[1])*10.0);
-	    if((x_val%2 == 0 && y_val%2 == 0)
+  vec4 primaryColor;
+  vec4 secondaryColor;
+
+  void initializeColors() {
+    primaryColor = color1;
+    secondaryColor = color2;
+  }
+
+  void blinkingFragment() {
+    if ((int(timePassed) % 2) > 0) {
+      primaryColor = color1;
+      secondaryColor = color2;
+    } else {
+      primaryColor = color2;
+      secondaryColor = color1;
+    }
+  }
+
+  void heartbeatFragment() {
+    //get the fractional part of the timePassed
+    float remainder = timePassed - float(int(timePassed));
+    fragmentColor[0] = fragmentColor[0] * remainder;
+    fragmentColor[1] = fragmentColor[1] * remainder;
+    fragmentColor[2] = fragmentColor[2] * remainder;
+    fragmentColor[3] = 1.0;
+  }
+
+  void stripeFragment(){
+    float xy_sum = 10.0 * (fract(modelPosition[0]) + fract(modelPosition[1]));
+    if (int(xy_sum) % 2 == 0) {
+      fragmentColor = primaryColor;
+    } else {
+      fragmentColor = secondaryColor;
+    }
+  }
+
+  void checkerFragment(){
+    int x_val = int(fract(modelPosition[0])*10.0);
+    int y_val = int(fract(modelPosition[1])*10.0);
+
+    if((x_val%2 == 0 && y_val%2 == 0)
         || ((x_val + 1)%2 == 0 && (y_val + 1)%2 == 0))
-      {
-       fragmentColor = color1;
-      } else {
-       fragmentColor = color2;
-      }
+    {
+     fragmentColor = primaryColor;
+    } else {
+     fragmentColor = secondaryColor;
+    }
+  }
+
+  void main(void) {
+
+    initializeColors();
+
+    if(int(flags[2]) == 1) { //blinking
+      blinkingFragment();
+    }
+
+  	if(int(selected) == 1) { //stripes
+      stripeFragment();
+  	} else if(int(flags[0]) == 1) { //checkers
+      checkerFragment();
   	} else { //solid color, no affects
-  		fragmentColor = color1;
+  		fragmentColor = primaryColor;
   	} 
 
   	if(int(flags[1]) == 1){ //heartbeat
-  		//get the fractional part of the timePassed
-  		float remainder = timePassed - float(int(timePassed));
-  		fragmentColor[0] = fragmentColor[0] * remainder;
-  		fragmentColor[1] = fragmentColor[1] * remainder;
-  		fragmentColor[2] = fragmentColor[2] * remainder;
-  		fragmentColor[3] = 1.0;
-
-
-	} else if(int(flags[2]) == 1) { //blinking
-		//thuans blinking stuff
-
+      heartbeatFragment();
   	}
-
   }
 `;
+

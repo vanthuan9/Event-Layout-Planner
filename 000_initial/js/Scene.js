@@ -8,6 +8,7 @@ const Scene = function(gl) {
   this.triangleGeometry = new TriangleGeometry(gl);
   this.circleGeometry = new CircleGeometry(gl, 90);
   this.chairGeometry = new ChairGeometry(gl);
+  this.coatRackGeometry = new CoatRackGeometry(gl, 400);
   this.lampGeometry = new LampGeometry(gl, 90);
 
   this.timeAtLastFrame = new Date().getTime();
@@ -36,6 +37,12 @@ const Scene = function(gl) {
   this.heartbeatMaterial.modelViewProjMatrix.set(new Mat4());
   this.heartbeatMaterial.flagsVector.set(0.0, 1.0, 0.0);
 
+  this.blinkMaterial = new Material(gl, this.solidProgram);
+  this.blinkMaterial.primary_color.set(1.0, 0.0, 0.0);
+  this.blinkMaterial.secondary_color.set(.3, .4, .5);
+  this.blinkMaterial.modelViewProjMatrix.set(new Mat4());
+  this.blinkMaterial.flagsVector.set(0.0, 0.0, 1.0);
+
   this.checkeredMaterial = new Material(gl, this.solidProgram);
   this.checkeredMaterial.primary_color.set(1.0, 1.0, 1.0);
   this.checkeredMaterial.secondary_color.set(.6, .9, .4);
@@ -45,20 +52,29 @@ const Scene = function(gl) {
   //make meshes
   this.heartbeatChair = new Mesh(this.chairGeometry, this.heartbeatMaterial);
   this.greenLamp = new Mesh(this.lampGeometry, this.greenMaterial);
-  this.checkeredLamp = new Mesh(this.lampGeometry, this.checkeredMaterial);
+  this.checkeredCoatRack = new Mesh(this.coatRackGeometry, this.checkeredMaterial);
+  this.blinkLamp = new Mesh(this.lampGeometry, this.blinkMaterial);
 
   //make gameObjs
   this.heartChairObj = new GameObject(this.heartbeatChair);
-  this.heartChairObj.isSelected = false;
+  this.heartChairObj.scale = new Vec3(0.7, 0.7, 0.7);
 
   this.greenLampObj = new GameObject(this.greenLamp);
-  this.greenLampObj.isSelected = false;
+  this.greenLampObj.scale = new Vec3(.5,.5,.5);
+
+  this.checkCoatObj = new GameObject(this.checkeredCoatRack);
+  this.checkCoatObj.scale = new Vec3(.5,.5,.5);
+
+  this.blinkLampObj = new GameObject(this.blinkLamp);
+  this.blinkLampObj.scale = new Vec3(.5,.5,.5);
 
   this.gameObjList = [];
   this.gameObjList.push(this.heartChairObj);  
   this.gameObjList.push(this.greenLampObj);
+  this.gameObjList.push(this.checkCoatObj);
+  this.gameObjList.push(this.blinkLampObj);
 
-  this.selectedObjIndexList = [0, 1];
+  this.selectedObjIndexList = [0];
   this.tabStillPressed = false;
   this.mStillPressed = false;
   this.multiSelectMode = false;
@@ -96,6 +112,7 @@ Scene.prototype.updateKeysPressed = function(keysPressed) {
     this.updateTabKey(keysPressed);
     this.updateShiftKey(keysPressed);
     this.updateDelKey(keysPressed);
+    this.updateGridKey(keysPressed);
   }
 };
 
@@ -153,7 +170,7 @@ Scene.prototype.updateTabKey = function(keysPressed) {
   if (!this.tabStillPressed) {
     if (keysPressed.TAB) {
       this.tabStillPressed = true;
-      var nextObj = this.selectedObjIndexList[0] + 1;
+      var nextObj = this.selectedObjIndexList[this.selectedObjIndexList.length - 1] + 1;
       nextObj = nextObj % this.gameObjList.length;
       if (!this.multiSelectMode){
         this.selectedObjIndexList = [];
@@ -165,7 +182,9 @@ Scene.prototype.updateTabKey = function(keysPressed) {
 };
 
 Scene.prototype.selectNewObj = function(index) {
-   this.selectedObjIndexList.push(index);
+  if (!this.selectedObjIndexList.includes(index)) {
+    this.selectedObjIndexList.push(index);
+  }
 };
 
 Scene.prototype.updateShiftKey = function(keysPressed) {
@@ -184,8 +203,8 @@ Scene.prototype.updateDelKey = function(keysPressed) {
 };
 
 Scene.prototype.delObj = function() {
-
-  for(var i = 0; i < this.selectedObjIndexList.length; i++) {
+  var selectedListLength = this.selectedObjIndexList.length;
+  for(var i = 0; i < selectedListLength; i++) {
     var delIndex = this.selectedObjIndexList[0];
     this.selectedObjIndexList.splice(0,1);
     this.gameObjList.splice(delIndex, 1);
@@ -199,6 +218,28 @@ Scene.prototype.delObj = function() {
   this.selectedObjIndexList = [0];
 };
 
+
+Scene.prototype.updateGridKey = function(keysPressed) {
+  var botRight = new Vec3(.5, -.5, 0.0);
+  var topRight = new Vec3(.5, .5, 0.0);
+  var botLeft = new Vec3(-.5, -.5, 0.0);
+  var topLeft = new Vec3(-.5, .5, 0.0);
+
+  if (keysPressed.G) {
+    for (var i = 0; i < this.selectedObjIndexList.length; i++) {
+      if (i % 4 == 0) {
+        this.gameObjList[this.selectedObjIndexList[i]].position = topLeft;
+      } else if (i % 4 == 1) {
+        this.gameObjList[this.selectedObjIndexList[i]].position = topRight;
+      } else if (i % 4 == 2) {
+        this.gameObjList[this.selectedObjIndexList[i]].position = botLeft;
+      } else {
+        this.gameObjList[this.selectedObjIndexList[i]].position = botRight;
+      }
+    }
+  }
+
+};
 
 Scene.prototype.clearSceneColor = function(gl) {
   gl.clearColor(0.2, .2, 1.0, 1.0);

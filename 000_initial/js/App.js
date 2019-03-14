@@ -42,6 +42,7 @@ App.prototype.registerEventHandlers = function() {
   };
   this.canvas.onmousedown = (event) => {
     //jshint unused:false
+    this.scene.onMouseDown(this.getMouseEventLocation(event));
   };
   this.canvas.onmousemove = (event) => {
     //jshint unused:false
@@ -49,12 +50,21 @@ App.prototype.registerEventHandlers = function() {
   };
   this.canvas.onmouseout = (event) => {
     //jshint unused:false
+
+    //this.scene.onMouseOut(this.getMouseEventLocation(event));
   };
   this.canvas.onmouseup = (event) => {
     //jshint unused:false
+    //this.scene.onMouseUp(this.getMouseEventLocation(event));
   };
   window.addEventListener('resize', () => this.resize() );
   window.requestAnimationFrame( () => this.update() );
+};
+
+App.prototype.getMouseEventLocation = function(event) {
+    screenX = 2*(event.clientX / this.canvas.width) - 1;
+    screenY = -2*(event.clientY / this.canvas.height) + 1;
+    return {x: screenX, y: screenY};
 };
 
 // animation frame update

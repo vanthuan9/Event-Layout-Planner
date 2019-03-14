@@ -262,6 +262,63 @@ Scene.prototype.updateGridKey = function(keysPressed) {
 
 };
 
+Scene.prototype.onMouseDown = function(mouseScreenLoc) {
+  const mouseRealLoc = this.getMouseCameraLoc(mouseScreenLoc);
+  const gameObjIndex = this.getGameObjIndexClicked(mouseRealLoc);
+
+  if (gameObjIndex >= 0) {
+    if (!this.multiSelectMode){
+      this.selectedObjIndexList = [];
+    }
+    this.selectNewObj(gameObjIndex);
+  } else {
+    this.selectedObjIndexList = [];
+  }
+};
+
+Scene.prototype.getMouseCameraLoc = function(mouseLoc) {
+  const mouseLocVec4 = new Vec4(mouseLoc.x, mouseLoc.y, 0.0, 1.0);
+  const mouseRealLocVec4 = 
+            mouseLocVec4.transform(this.camera.viewProjMatrix.invert());
+  const mouseRealLocVec3 = new Vec3(mouseLocVec4.x,
+                                    mouseLocVec4.y,
+                                    mouseLocVec4.z);
+  return mouseRealLocVec3;
+};
+
+Scene.prototype.getGameObjIndexClicked = function(mouseLoc) {
+  var currentClosestIndex = -1;
+  var currentClosestDistance = 1;
+  for (var i=0; i<this.gameObjList.length; i++){
+    const currentDistance = 
+          this.vec3Distance(mouseLoc, this.gameObjList[i].position);
+
+    if (currentDistance < currentClosestDistance 
+        && currentDistance < 0.3){
+      currentClosestIndex = i;
+      currentClosestDistance = currentDistance;
+    }
+  }
+  return currentClosestIndex;
+};
+
+Scene.prototype.onMouseUp = function(screenX, screenY) {
+
+};
+
+Scene.prototype.onMouseMove = function(screenX, screenY) {
+
+};
+
+Scene.prototype.onMouseOut = function(screenX, screenY) {
+
+};
+
+
+Scene.prototype.vec3Distance = function(vector1, vector2){
+  return vector1.minus(vector2).length();
+}
+
 Scene.prototype.clearSceneColor = function(gl) {
   gl.clearColor(0.2, .2, 1.0, 1.0);
   gl.clearDepth(1.0);

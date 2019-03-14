@@ -47,15 +47,15 @@ App.prototype.registerEventHandlers = function() {
   this.canvas.onmousemove = (event) => {
     //jshint unused:false
     event.stopPropagation();
+    this.scene.onMouseMove(this.getMouseEventLocation(event));
   };
   this.canvas.onmouseout = (event) => {
     //jshint unused:false
-
-    //this.scene.onMouseOut(this.getMouseEventLocation(event));
+    this.scene.onMouseOut(this.getMouseEventLocation(event));
   };
   this.canvas.onmouseup = (event) => {
     //jshint unused:false
-    //this.scene.onMouseUp(this.getMouseEventLocation(event));
+    this.scene.onMouseUp(this.getMouseEventLocation(event));
   };
   window.addEventListener('resize', () => this.resize() );
   window.requestAnimationFrame( () => this.update() );

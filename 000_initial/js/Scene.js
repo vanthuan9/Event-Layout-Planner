@@ -78,6 +78,8 @@ const Scene = function(gl) {
   this.tabStillPressed = false;
   this.mStillPressed = false;
   this.multiSelectMode = false;
+  this.rotating = false;
+  this.oldMousePos = new Vec3(0,0,0);
 };
 
 
@@ -266,6 +268,9 @@ Scene.prototype.onMouseDown = function(mouseScreenLoc) {
   const mouseRealLoc = this.getMouseCameraLoc(mouseScreenLoc);
   const gameObjIndex = this.getGameObjIndexClicked(mouseRealLoc);
 
+  this.rotating = true;
+  this.oldMousePos = mouseRealLoc;
+
   if (gameObjIndex >= 0) {
     if (!this.multiSelectMode){
       this.selectedObjIndexList = [];
@@ -302,16 +307,28 @@ Scene.prototype.getGameObjIndexClicked = function(mouseLoc) {
   return currentClosestIndex;
 };
 
-Scene.prototype.onMouseUp = function(screenX, screenY) {
-
+Scene.prototype.onMouseUp = function(mouseScreenLoc) {
+  this.rotating = false;
 };
 
-Scene.prototype.onMouseMove = function(screenX, screenY) {
+Scene.prototype.onMouseMove = function(mouseScreenLoc) {
+  if (this.rotating && this.selectedObjIndexList.length > 0) {
+    const mouseRealLoc = this.getMouseCameraLoc(mouseScreenLoc);
 
+    const pivot = this.gameObjList[this.selectedObjIndexList[0]].position;
+    const newRotation = Math.atan2(mouseRealLoc.y - pivot.y, 
+                                    mouseRealLoc.x - pivot.x);
+    const oldRotation = Math.atan2(this.oldMousePos.y - pivot.y, 
+                                    this.oldMousePos.x - pivot.x);
+
+    this.rotateSelected(newRotation - oldRotation);
+
+    this.oldMousePos = mouseRealLoc;
+  }
 };
 
-Scene.prototype.onMouseOut = function(screenX, screenY) {
-
+Scene.prototype.onMouseOut = function(mouseScreenLoc) {
+  this.onMouseUp(mouseScreenLoc);
 };
 
 
